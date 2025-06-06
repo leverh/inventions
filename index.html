@@ -3,66 +3,73 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Timeline of Inventions</title>
-  <link rel="stylesheet" href="/src/styles/reset.css">
   <link rel="stylesheet" href="/src/styles/base.css">
-  <link rel="stylesheet" href="/src/styles/sections.css">
-  <link rel="stylesheet" href="/src/styles/layout-extras.css">
+  <title>Timeline of Inventions</title>
 </head>
 <body>
-  <section class="intro">
-  <div class="intro-content">
-    <h1>The Timeline of Inventions</h1>
-    <p>Scroll to explore the eras of human innovation</p>
+  <div class="loading-screen" id="loading">
+    <div class="loader"></div>
   </div>
-</section>
-
+  <div class="custom-cursor" id="cursor"></div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  <div class="particles" id="particles"></div>
+  <section class="intro">
+    <div class="intro-content">
+      <h1 id="mainTitle">The Timeline of Inventions</h1>
+      <p id="subtitle">Scroll to explore the eras of human innovation</p>
+    </div>
+    <div class="scroll-indicator">
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
   <main id="timeline">
     <nav class="timeline-sidebar">
-  <ul>
-    <li data-target="stone-age">Stone Age</li>
-    <li data-target="renaissance">Renaissance</li>
-    <li data-target="modern-age">Modern Age</li>
-    <li data-target="future">Future</li>
-  </ul>
-</nav>
-
+      <ul>
+        <li data-target="stone-age">Stone Age</li>
+        <li data-target="renaissance">Renaissance</li>
+        <li data-target="modern-age">Modern Age</li>
+        <li data-target="future">Future</li>
+      </ul>
+    </nav>
     <section class="era" id="stone-age">
-      <div class="background-layer" style="background-image: url('/images/stone-age.webp')"></div>
+      <div class="background-layer background-stone-age"></div>
       <div class="content">
         <h2>Stone Age</h2>
-        <p>Fire, stone tools, early art.</p>
+        <p>The dawn of human innovation. Fire brought warmth and protection, stone tools enabled hunting and crafting, and early cave paintings marked humanity's first artistic expressions.</p>
       </div>
     </section>
-
     <section class="era" id="renaissance">
-      <div class="background-layer" style="background-image: url('/images/renaissance.webp')"></div>
+      <div class="background-layer background-renaissance"></div>
       <div class="content">
         <h2>Renaissance</h2>
-        <p>Printing press, telescope, anatomy.</p>
+      <p>An explosion of knowledge and creativity. The printing press democratized information, telescopes revealed the cosmos, and detailed anatomical studies advanced medicine.</p>
       </div>
     </section>
-
     <section class="era" id="modern-age">
-      <div class="background-layer" style="background-image: url('/images/modern.webp')"></div>
+      <div class="background-layer background-modern-age"></div>
       <div class="content">
         <h2>Modern Age</h2>
-        <p>Electricity, internet, space travel.</p>
+        <p>The age of electricity transformed daily life, the internet connected the world, and space exploration expanded our horizons beyond Earth's boundaries.</p>
       </div>
     </section>
-
     <section class="era" id="future">
-      <div class="background-layer" style="background-image: url('/images/future.webp')"></div>
+      <div class="background-layer background-future"></div>
       <div class="content">
         <h2>Future</h2>
-        <p>AI, space colonization, quantum computing.</p>
+        <p>Artificial intelligence augments human capability, space colonization becomes reality, and quantum computing solves previously impossible problems.</p>
       </div>
     </section>
   </main>
   <footer class="footer">
-  <p>&copy; 2025 Your Name. Built with GSAP & Vite.</p>
-  <p class="footer-note">Made for curious minds.</p>
+    <p>&copy; 2025 Your Name. Built with modern web technologies.</p>
+    <p class="footer-note">Made for curious minds exploring human innovation.</p>
   </footer>
-  <script type="module" src="/src/js/main.js"></script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  
+  <script src="/src/js/main.js"></script>
 </body>
 </html>
