@@ -8,7 +8,7 @@ const inventionData = {
   'fire': {
     title: 'Fire',
     year: '~1.7 million years ago',
-    icon: '🔥', // or: '/images/icons/fire.png' to be decided
+    icon: '/images/inventions/fire.webp',
     description: 'The controlled use of fire was one of humanity\'s most significant discoveries.',
     details: `
       <h3>Historical Impact</h3>
@@ -21,7 +21,7 @@ const inventionData = {
   'stone-tools': {
     title: 'Stone Tools',
     year: '~2.6 million years ago',
-    icon: '🪨',
+    icon: '/images/inventions/stone-tools.webp',
     description: 'The first manufactured tools marked the beginning of technology.',
     details: `
       <h3>Evolution of Tool Making</h3>
@@ -34,7 +34,7 @@ const inventionData = {
   'cave-art': {
     title: 'Cave Art',
     year: '~40,000 years ago',
-    icon: '🎨',
+    icon: '/images/inventions/cave-art.webp',
     description: 'Humanity\'s first artistic expressions and symbolic communication.',
     details: `
       <h3>Artistic Revolution</h3>
@@ -47,7 +47,7 @@ const inventionData = {
   'printing-press': {
     title: 'Printing Press',
     year: '1440',
-    icon: '📖',
+    icon: '/images/inventions/printing-press.webp',
     description: 'Gutenberg\'s movable type revolutionized knowledge sharing.',
     details: `
       <h3>The Knowledge Revolution</h3>
@@ -60,7 +60,7 @@ const inventionData = {
   'telescope': {
     title: 'Telescope',
     year: '1608',
-    icon: '🔭',
+    icon: '/images/inventions/telescope.webp',
     description: 'Opened the cosmos to human observation and scientific discovery.',
     details: `
       <h3>Cosmic Perspective</h3>
@@ -73,7 +73,7 @@ const inventionData = {
   'microscope': {
     title: 'Microscope',
     year: '1590',
-    icon: '🔬',
+    icon: '/images/inventions/microscope.webp',
     description: 'Revealed the microscopic world and advanced medical understanding.',
     details: `
       <h3>The Invisible World</h3>
@@ -86,7 +86,7 @@ const inventionData = {
   'electricity': {
     title: 'Electricity',
     year: '1879',
-    icon: '⚡',
+    icon: '/images/inventions/electricity.webp',
     description: 'Edison\'s light bulb and electrical systems powered the modern world.',
     details: `
       <h3>Illuminating Progress</h3>
@@ -99,7 +99,7 @@ const inventionData = {
   'internet': {
     title: 'Internet',
     year: '1969',
-    icon: '🌐',
+    icon: '/images/inventions/internet.webp',
     description: 'Connected humanity in an unprecedented global network.',
     details: `
       <h3>Global Connection</h3>
@@ -112,7 +112,7 @@ const inventionData = {
   'space-travel': {
     title: 'Space Travel',
     year: '1957',
-    icon: '🚀',
+    icon: '/images/inventions/space-travel.webp',
     description: 'Sputnik launched the space age and human exploration beyond Earth.',
     details: `
       <h3>Beyond Earth\'s Boundaries</h3>
@@ -125,7 +125,7 @@ const inventionData = {
   'ai': {
     title: 'Artificial Intelligence',
     year: '2020s+',
-    icon: '🤖',
+    icon: '/images/inventions/ai.webp',
     description: 'Machine learning systems that augment human capabilities.',
     details: `
       <h3>Cognitive Augmentation</h3>
@@ -138,7 +138,7 @@ const inventionData = {
   'quantum-computing': {
     title: 'Quantum Computing',
     year: '2010s+',
-    icon: '⚛️',
+    icon: '/images/inventions/quantum-computing.webp',
     description: 'Harnessing quantum mechanics for exponential computational power.',
     details: `
       <h3>Quantum Advantage</h3>
@@ -151,7 +151,7 @@ const inventionData = {
   'space-colonization': {
     title: 'Space Colonization',
     year: '2030s+',
-    icon: '🏗️',
+    icon: '/images/inventions/space-colonization.webp',
     description: 'Establishing permanent human settlements beyond Earth.',
     details: `
       <h3>Multi-Planetary Species</h3>
@@ -162,6 +162,45 @@ const inventionData = {
     `
   }
 };
+
+// Categories
+const eraInventions = {
+  'stone-age': ['fire', 'stone-tools', 'cave-art'],
+  'renaissance': ['printing-press', 'telescope', 'microscope'],
+  'modern-age': ['electricity', 'internet', 'space-travel'],
+  'future': ['ai', 'quantum-computing', 'space-colonization']
+};
+
+function generateInventionCards() {
+  console.log('Generating invention cards...');
+  
+  Object.keys(eraInventions).forEach(eraId => {
+    const inventionsGrid = document.querySelector(`#${eraId} .inventions-grid`);
+    
+    if (inventionsGrid) {
+      inventionsGrid.innerHTML = '';
+
+      eraInventions[eraId].forEach(inventionKey => {
+        const invention = inventionData[inventionKey];
+        
+        if (invention) {
+          const cardHTML = `
+            <div class="invention-card" data-invention="${inventionKey}">
+              <img src="${invention.icon}" alt="${invention.title}" class="invention-photo">
+              <div class="invention-title">${invention.title}</div>
+              <div class="invention-year">${invention.year}</div>
+              <div class="invention-description">${invention.description}</div>
+            </div>
+          `;
+          
+          inventionsGrid.innerHTML += cardHTML;
+        }
+      });
+    }
+  });
+  
+  console.log('Invention cards generated successfully');
+}
 
 function lazyLoadBackgrounds() {
   const lazyBgs = document.querySelectorAll('.lazy-bg');
@@ -189,26 +228,28 @@ function initModal() {
   const modalBody = document.getElementById('modalBody');
   const closeModal = document.getElementById('closeModal');
 
-  document.querySelectorAll('.invention-card').forEach(card => {
-    card.addEventListener('click', () => {
-      const inventionKey = card.getAttribute('data-invention');
-      const invention = inventionData[inventionKey];
-      
-      if (invention) {
-        modalTitle.textContent = invention.title;
-        modalBody.innerHTML = `
-        <div style="text-align: center; margin-bottom: 2rem;">
-        <img src="${invention.icon}" alt="${invention.title}" style="width: 120px; height: 120px; object-fit: cover; border-radius: 12px; margin-bottom: 1rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);">
-        <p style="color: #40e0d0; font-size: 1.2rem; margin-bottom: 0.5rem;">${invention.year}</p>
-        <p style="font-style: italic; color: #aaa;">${invention.description}</p>
-        </div>
-  ${invention.details}
-`;
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-      }
+  function attachModalEvents() {
+    document.querySelectorAll('.invention-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const inventionKey = card.getAttribute('data-invention');
+        const invention = inventionData[inventionKey];
+        
+        if (invention) {
+          modalTitle.textContent = invention.title;
+          modalBody.innerHTML = `
+            <div style="text-align: center; margin-bottom: 2rem;">
+              <img src="${invention.icon}" alt="${invention.title}" style="width: 120px; height: 120px; object-fit: cover; border-radius: 12px; margin-bottom: 1rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);">
+              <p style="color: #40e0d0; font-size: 1.2rem; margin-bottom: 0.5rem;">${invention.year}</p>
+              <p style="font-style: italic; color: #aaa;">${invention.description}</p>
+            </div>
+            ${invention.details}
+          `;
+          modal.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }
+      });
     });
-  });
+  }
 
   function closeModalHandler() {
     modal.classList.remove('active');
@@ -223,14 +264,19 @@ function initModal() {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeModalHandler();
   });
+
+  return { attachModalEvents };
 }
 
 function initializeEnhancedTimeline() {
   console.log('Initializing enhanced timeline...');
 
+  generateInventionCards();
+
   lazyLoadBackgrounds();
 
-  initModal();
+  const modal = initModal();
+  modal.attachModalEvents();
   
   const loadingScreen = document.getElementById('loading');
 
@@ -423,10 +469,17 @@ function initializeEnhancedTimeline() {
     }
     animateCursor();
 
-    document.querySelectorAll('li, .invention-card, h1, h2, .progress-dot').forEach(el => {
-      el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-      el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-    });
+    document.addEventListener('mouseenter', (e) => {
+      if (e.target.matches('li, .invention-card, h1, h2, .progress-dot, .invention-photo')) {
+        cursor.classList.add('hover');
+      }
+    }, true);
+
+    document.addEventListener('mouseleave', (e) => {
+      if (e.target.matches('li, .invention-card, h1, h2, .progress-dot, .invention-photo')) {
+        cursor.classList.remove('hover');
+      }
+    }, true);
   }
 
   document.querySelectorAll('.timeline-sidebar li, .progress-dot').forEach(item => {
