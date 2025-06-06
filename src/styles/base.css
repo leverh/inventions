@@ -1,5 +1,4 @@
-    /* Reset and base styles */
-    * {
+* {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -41,6 +40,7 @@
       height: 100%;
       background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       z-index: 10000;
@@ -60,6 +60,13 @@
       border-top: 3px solid #40e0d0;
       border-radius: 50%;
       animation: spin 1s linear infinite;
+      margin-bottom: 2rem;
+    }
+
+    .loading-text {
+      color: #40e0d0;
+      font-size: 1.2rem;
+      opacity: 0.8;
     }
 
     @keyframes spin {
@@ -67,7 +74,7 @@
       100% { transform: rotate(360deg); }
     }
 
-
+    /* Intro Section */
     .intro {
       height: 100vh;
       display: flex;
@@ -276,7 +283,18 @@
       opacity: 0.8;
     }
 
-    .content {
+    /* Era Content Layout */
+    .era-content-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1400px;
+      gap: 4rem;
+    }
+
+    .main-content {
+      flex: 1;
       text-align: center;
       padding: 3rem 4rem;
       background: rgba(0, 0, 0, 0.7);
@@ -289,7 +307,7 @@
       overflow: hidden;
     }
 
-    .content::before {
+    .main-content::before {
       content: '';
       position: absolute;
       top: -2px;
@@ -305,7 +323,7 @@
       transition: opacity 0.3s ease;
     }
 
-    .content:hover::before {
+    .main-content:hover::before {
       opacity: 1;
     }
 
@@ -316,61 +334,222 @@
       75% { background-position: 0% 100%; }
     }
 
-    .content h2 {
+    .main-content h2 {
       font-size: clamp(2.5rem, 6vw, 4rem);
       margin-bottom: 1.5rem;
       color: #fff;
       text-shadow: 0 0 20px rgba(64, 224, 208, 0.3);
     }
 
-    .content p {
+    .main-content p {
       font-size: 1.4rem;
       max-width: 60ch;
       color: #ccc;
       line-height: 1.8;
+      margin: 0 auto;
     }
 
-/* Era background images with dark overlay gradient */
-.background-stone-age {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/images/stone-age.webp');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
+    /* Invention Grid */
+    .inventions-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      opacity: 0;
+      transform: translateX(50px);
+    }
 
-.background-renaissance {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/images/renaissance.webp');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.background-modern-age {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/images/modern-age.webp');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.background-future {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/images/future.webp');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-    /* Footer */
-    .footer {
-      background: #0a0a0a;
+    .invention-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
       padding: 2rem;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: all 0.3s ease;
       text-align: center;
-      border-top: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
     }
 
-    .footer p {
-      color: #666;
+    .invention-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(64, 224, 208, 0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .invention-card:hover::before {
+      left: 100%;
+    }
+
+    .invention-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(64, 224, 208, 0.2);
+      border-color: #40e0d0;
+    }
+
+    .invention-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #40e0d0;
+    }
+
+    /* .invention-icon-img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    } */
+
+/* Or specific classes for each invention - to be decided based on image
+.icon-fire {
+  background-image: url('/images/icons/fire.png');
+  background-size: cover;
+  width: 60px;
+  height: 60px;
+  margin-bottom: 1rem;
+}
+*/
+
+.invention-photo {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  filter: brightness(1.05) contrast(1.1) saturate(0.9);
+  transition: all 0.3s ease;
+}
+
+.invention-photo:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1) contrast(1.15) saturate(1);
+  box-shadow: 0 8px 20px rgba(64, 224, 208, 0.2);
+}
+    .invention-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+
+    .invention-year {
       font-size: 0.9rem;
-      margin: 0.5rem 0;
+      color: #888;
+      margin-bottom: 1rem;
+    }
+
+    .invention-description {
+      font-size: 0.95rem;
+      color: #ccc;
+      line-height: 1.5;
+    }
+
+    /* Modal for invention info */
+    .invention-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .invention-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      background: rgba(20, 20, 30, 0.95);
+      border-radius: 20px;
+      padding: 3rem;
+      max-width: 600px;
+      width: 90%;
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transform: scale(0.8);
+      transition: transform 0.3s ease;
+    }
+
+    .invention-modal.active .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .modal-title {
+      font-size: 2rem;
+      color: #40e0d0;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 50%;
+      transition: background 0.3s ease;
+    }
+
+    .close-modal:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .modal-body {
+      color: #ccc;
+      line-height: 1.8;
+    }
+
+    .modal-body h3 {
+      color: #fff;
+      margin: 1.5rem 0 1rem 0;
+    }
+
+    /* Timeline Progress Indicator */
+    .era-progress {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 1rem;
+    }
+
+    .progress-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .progress-dot.active {
+      background: #40e0d0;
+      box-shadow: 0 0 15px rgba(64, 224, 208, 0.6);
     }
 
     /* Floating Particles */
@@ -410,7 +589,53 @@
       }
     }
 
+    /* Background Images */
+    .background-stone-age {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1600&h=900&fit=crop');
+    }
+
+    .background-renaissance {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=1600&h=900&fit=crop');
+    }
+
+    .background-modern-age {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), 
+    url('/images/chi2.webp');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center bottom;
+}
+
+    .background-future {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1600&h=900&fit=crop');
+    }
+
+    /* Footer */
+    .footer {
+      background: #0a0a0a;
+      padding: 2rem;
+      text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .footer p {
+      color: #666;
+      font-size: 0.9rem;
+      margin: 0.5rem 0;
+    }
+
     /* Responsive Design */
+    @media (max-width: 1024px) {
+      .era-content-wrapper {
+        flex-direction: column;
+        gap: 2rem;
+      }
+      
+      .inventions-grid {
+        transform: translateY(30px);
+      }
+    }
+
     @media (max-width: 768px) {
       .timeline-sidebar {
         left: 1rem;
@@ -421,11 +646,25 @@
         padding: 2rem 1rem;
       }
       
-      .content {
+      .main-content {
         padding: 2rem;
+      }
+      
+      .inventions-grid {
+        grid-template-columns: 1fr;
       }
       
       .intro-content h1 {
         font-size: 2.5rem;
       }
+    }
+
+    /* Lazy Loading Images */
+    .lazy-bg {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .lazy-bg.loaded {
+      opacity: 1;
     }
