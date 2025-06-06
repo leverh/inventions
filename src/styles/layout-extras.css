@@ -1,0 +1,53 @@
+.intro {
+  position: relative;
+  height: 100vh;
+  background: linear-gradient(to bottom, #000 0%, #222 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 10;
+}
+
+.intro-content {
+  max-width: 60ch;
+  padding: 2rem;
+  animation: fade-in 2s ease forwards;
+}
+
+.intro h1 {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.intro p {
+  font-size: 2rem;
+  color: #ccc;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Footer styling */
+.footer {
+  padding: 4rem 2rem;
+  background-color: #111;
+  color: #aaa;
+  text-align: center;
+  border-top: 1px solid #222;
+}
+
+.footer-note {
+  margin-top: 1rem;
+  font-style: italic;
+  font-size: 1.4rem;
+  color: #777;
+}
+
+.footer p {
+  font-size: 1.6rem;
+  margin: 0.5rem 0;
+}

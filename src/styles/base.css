@@ -1,0 +1,45 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  background: #111;
+  color: #f0f0f0;
+  overflow-x: hidden;
+}
+
+h2 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+p {
+  font-size: 1.6rem;
+  max-width: 60ch;
+}
+
+.timeline-sidebar {
+  position: fixed;
+  top: 50%;
+  left: 2rem;
+  transform: translateY(-50%);
+  z-index: 100;
+}
+
+.timeline-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.timeline-sidebar li {
+  font-size: 1.4rem;
+  margin: 1rem 0;
+  cursor: pointer;
+  color: #aaa;
+  transition: color 0.3s ease;
+}
+
+.timeline-sidebar li.active {
+  color: #fff;
+  font-weight: bold;
+  text-shadow: 0 0 5px #fff;
+}
