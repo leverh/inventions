@@ -171,25 +171,51 @@ const eraInventions = {
   'future': ['ai', 'quantum-computing', 'space-colonization']
 };
 
+// 3D flip cards
 function generateInventionCards() {
-  console.log('Generating invention cards...');
+  console.log('Generating 3D flip invention cards...');
   
   Object.keys(eraInventions).forEach(eraId => {
     const inventionsGrid = document.querySelector(`#${eraId} .inventions-grid`);
     
     if (inventionsGrid) {
       inventionsGrid.innerHTML = '';
-
+      
       eraInventions[eraId].forEach(inventionKey => {
         const invention = inventionData[inventionKey];
         
         if (invention) {
+          const shortDetails = invention.details
+            .replace(/<h3>.*?<\/h3>/g, '')
+            .replace(/<[^>]*>/g, '')
+            .split('.')[0] + '.';
+          
           const cardHTML = `
             <div class="invention-card" data-invention="${inventionKey}">
-              <img src="${invention.icon}" alt="${invention.title}" class="invention-photo">
-              <div class="invention-title">${invention.title}</div>
-              <div class="invention-year">${invention.year}</div>
-              <div class="invention-description">${invention.description}</div>
+              <div class="invention-card-inner">
+                <div class="invention-card-front">
+                  <img src="${invention.icon}" alt="${invention.title}" class="invention-photo">
+                  <div class="invention-title">${invention.title}</div>
+                  <div class="invention-year">${invention.year}</div>
+                  <div class="invention-description">${invention.description}</div>
+                  <div class="flip-indicator">Hover to flip →</div>
+                </div>
+                
+                <div class="invention-card-back">
+                  <div class="invention-detail-content">
+                    <div class="invention-detail-icon">
+                      <img src="${invention.icon}" alt="${invention.title}" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
+                    </div>
+                    <div class="invention-detail-title">${invention.title}</div>
+                    <div class="invention-detail-year">${invention.year}</div>
+                    <div class="invention-detail-text">
+                      ${shortDetails.length > 150 ? shortDetails.substring(0, 150) + '...' : shortDetails}
+                      <br><br>
+                      <strong style="color: #40e0d0;">Click for full details</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           `;
           
@@ -199,9 +225,10 @@ function generateInventionCards() {
     }
   });
   
-  console.log('Invention cards generated successfully');
+  console.log('3D flip invention cards generated successfully');
 }
 
+// Lazy loading
 function lazyLoadBackgrounds() {
   const lazyBgs = document.querySelectorAll('.lazy-bg');
   
@@ -222,6 +249,7 @@ function lazyLoadBackgrounds() {
   });
 }
 
+// Modal
 function initModal() {
   const modal = document.getElementById('inventionModal');
   const modalTitle = document.getElementById('modalTitle');
@@ -230,7 +258,9 @@ function initModal() {
 
   function attachModalEvents() {
     document.querySelectorAll('.invention-card').forEach(card => {
-      card.addEventListener('click', () => {
+      card.addEventListener('click', (e) => {
+        e.stopPropagation();
+        
         const inventionKey = card.getAttribute('data-invention');
         const invention = inventionData[inventionKey];
         
@@ -238,22 +268,48 @@ function initModal() {
           modalTitle.textContent = invention.title;
           modalBody.innerHTML = `
             <div style="text-align: center; margin-bottom: 2rem;">
-              <img src="${invention.icon}" alt="${invention.title}" style="width: 120px; height: 120px; object-fit: cover; border-radius: 12px; margin-bottom: 1rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);">
-              <p style="color: #40e0d0; font-size: 1.2rem; margin-bottom: 0.5rem;">${invention.year}</p>
-              <p style="font-style: italic; color: #aaa;">${invention.description}</p>
+              <img src="${invention.icon}" alt="${invention.title}" style="width: 120px; height: 120px; object-fit: cover; border-radius: 12px; margin-bottom: 1rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); border: 2px solid rgba(64, 224, 208, 0.3);">
+              <p style="color: #40e0d0; font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 600;">${invention.year}</p>
+              <p style="font-style: italic; color: #aaa; font-size: 1.1rem;">${invention.description}</p>
             </div>
-            ${invention.details}
+            <div style="text-align: left; line-height: 1.6;">
+              ${invention.details}
+            </div>
           `;
           modal.classList.add('active');
           document.body.style.overflow = 'hidden';
+          
+          const modalContent = modal.querySelector('.modal-content');
+          modalContent.style.transform = 'scale(0.9) rotateY(-10deg)';
+          modalContent.style.opacity = '0';
+          
+          setTimeout(() => {
+            modalContent.style.transform = 'scale(1) rotateY(0deg)';
+            modalContent.style.opacity = '1';
+            modalContent.style.transition = 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+          }, 50);
         }
+      });
+      
+      card.addEventListener('mouseenter', () => {
+        card.style.transform = 'translateY(-5px)';
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'translateY(0)';
       });
     });
   }
 
   function closeModalHandler() {
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
+    const modalContent = modal.querySelector('.modal-content');
+    modalContent.style.transform = 'scale(0.9) rotateY(10deg)';
+    modalContent.style.opacity = '0';
+    
+    setTimeout(() => {
+      modal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }, 200);
   }
   
   closeModal.addEventListener('click', closeModalHandler);
@@ -268,11 +324,175 @@ function initModal() {
   return { attachModalEvents };
 }
 
+// Animations
+function initEnhancedAnimations() {
+  console.log('Starting enhanced animations with 3D cards...');
+
+  const tl = gsap.timeline();
+  tl.to('#mainTitle', { opacity: 1, y: 0, duration: 1.2, ease: 'power2.out' })
+    .to('#subtitle', { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }, '-=0.6')
+    .to('.scroll-indicator', { opacity: 1, duration: 0.8 }, '-=0.4');
+
+  gsap.to('.timeline-sidebar li', {
+    opacity: 1,
+    x: 0,
+    duration: 0.8,
+    stagger: 0.15,
+    delay: 2.5,
+    ease: 'back.out(1.7)'
+  });
+
+  document.querySelectorAll('.era').forEach((section, index) => {
+    const mainContent = section.querySelector('.main-content');
+    const inventionsGrid = section.querySelector('.inventions-grid');
+    const bg = section.querySelector('.background-layer');
+    const sectionId = section.getAttribute('id');
+    const navItem = document.querySelector(`[data-target='${sectionId}']`);
+    const progressDot = document.querySelector(`[data-era='${sectionId}']`);
+
+    if (mainContent) {
+      gsap.fromTo(mainContent,
+        { y: 80, opacity: 0, scale: 0.95 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 1.2,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 75%',
+            end: 'top 25%',
+            toggleActions: 'play none none reverse'
+          }
+        }
+      );
+    }
+
+    if (inventionsGrid) {
+      gsap.fromTo(inventionsGrid,
+        { x: 60, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          duration: 1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 70%',
+            end: 'top 30%',
+            toggleActions: 'play none none reverse'
+          }
+        }
+      );
+
+      const cards = inventionsGrid.querySelectorAll('.invention-card');
+      cards.forEach((card, cardIndex) => {
+        gsap.fromTo(card,
+          { 
+            y: 60, 
+            opacity: 0, 
+            rotationX: -15,
+            scale: 0.9
+          },
+          {
+            y: 0,
+            opacity: 1,
+            rotationX: 0,
+            scale: 1,
+            duration: 0.8,
+            delay: cardIndex * 0.15,
+            ease: 'back.out(1.4)',
+            scrollTrigger: {
+              trigger: inventionsGrid,
+              start: 'top 80%',
+              toggleActions: 'play none none reverse'
+            }
+          }
+        );
+        
+        gsap.to(card, {
+          y: -5,
+          duration: 2 + Math.random() * 2,
+          ease: 'power2.inOut',
+          yoyo: true,
+          repeat: -1,
+          delay: cardIndex * 0.3
+        });
+      });
+    }
+
+    if (bg) {
+      gsap.to(bg, {
+        y: -100,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1.5
+        }
+      });
+    }
+
+    if (navItem && progressDot) {
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top center',
+        end: 'bottom center',
+        onEnter: () => {
+          navItem.classList.add('active');
+          progressDot.classList.add('active');
+        },
+        onLeave: () => {
+          navItem.classList.remove('active');
+          progressDot.classList.remove('active');
+        },
+        onEnterBack: () => {
+          navItem.classList.add('active');
+          progressDot.classList.add('active');
+        },
+        onLeaveBack: () => {
+          navItem.classList.remove('active');
+          progressDot.classList.remove('active');
+        }
+      });
+    }
+  });
+
+  const progressFill = document.getElementById('progressFill');
+  if (progressFill) {
+    ScrollTrigger.create({
+      trigger: 'body',
+      start: 'top top',
+      end: 'bottom bottom',
+      onUpdate: self => {
+        progressFill.style.width = (self.progress * 100) + '%';
+      }
+    });
+  }
+
+  const intro = document.querySelector('.intro');
+  if (intro) {
+    gsap.to(intro, {
+      opacity: 0.2,
+      scale: 0.9,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: intro,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 2
+      }
+    });
+  }
+}
+
+// Main
 function initializeEnhancedTimeline() {
   console.log('Initializing enhanced timeline...');
 
   generateInventionCards();
-
   lazyLoadBackgrounds();
 
   const modal = initModal();
@@ -302,186 +522,7 @@ function initializeEnhancedTimeline() {
     }, 2000);
   }
 
-  function initEnhancedAnimations() {
-    console.log('Starting enhanced animations...');
-
-    const tl = gsap.timeline();
-    tl.to('#mainTitle', { opacity: 1, y: 0, duration: 1.2, ease: 'power2.out' })
-      .to('#subtitle', { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }, '-=0.6')
-      .to('.scroll-indicator', { opacity: 1, duration: 0.8 }, '-=0.4');
-
-    gsap.to('.timeline-sidebar li', {
-      opacity: 1,
-      x: 0,
-      duration: 0.8,
-      stagger: 0.15,
-      delay: 2.5,
-      ease: 'back.out(1.7)'
-    });
-
-    document.querySelectorAll('.era').forEach((section, index) => {
-      const mainContent = section.querySelector('.main-content');
-      const inventionsGrid = section.querySelector('.inventions-grid');
-      const bg = section.querySelector('.background-layer');
-      const sectionId = section.getAttribute('id');
-      const navItem = document.querySelector(`[data-target='${sectionId}']`);
-      const progressDot = document.querySelector(`[data-era='${sectionId}']`);
-
-      if (mainContent) {
-        gsap.fromTo(mainContent,
-          { y: 80, opacity: 0, scale: 0.95 },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            duration: 1.2,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: section,
-              start: 'top 75%',
-              end: 'top 25%',
-              toggleActions: 'play none none reverse'
-            }
-          }
-        );
-      }
-
-      if (inventionsGrid) {
-        gsap.fromTo(inventionsGrid,
-          { x: 60, opacity: 0 },
-          {
-            x: 0,
-            opacity: 1,
-            duration: 1,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: section,
-              start: 'top 70%',
-              end: 'top 30%',
-              toggleActions: 'play none none reverse'
-            }
-          }
-        );
-
-        const cards = inventionsGrid.querySelectorAll('.invention-card');
-        cards.forEach((card, cardIndex) => {
-          gsap.fromTo(card,
-            { y: 40, opacity: 0 },
-            {
-              y: 0,
-              opacity: 1,
-              duration: 0.6,
-              delay: cardIndex * 0.2,
-              ease: 'back.out(1.7)',
-              scrollTrigger: {
-                trigger: inventionsGrid,
-                start: 'top 80%',
-                toggleActions: 'play none none reverse'
-              }
-            }
-          );
-        });
-      }
-
-      if (bg) {
-        gsap.to(bg, {
-          y: -100,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1.5
-          }
-        });
-      }
-
-      if (navItem && progressDot) {
-        ScrollTrigger.create({
-          trigger: section,
-          start: 'top center',
-          end: 'bottom center',
-          onEnter: () => {
-            navItem.classList.add('active');
-            progressDot.classList.add('active');
-          },
-          onLeave: () => {
-            navItem.classList.remove('active');
-            progressDot.classList.remove('active');
-          },
-          onEnterBack: () => {
-            navItem.classList.add('active');
-            progressDot.classList.add('active');
-          },
-          onLeaveBack: () => {
-            navItem.classList.remove('active');
-            progressDot.classList.remove('active');
-          }
-        });
-      }
-    });
-
-    const progressFill = document.getElementById('progressFill');
-    if (progressFill) {
-      ScrollTrigger.create({
-        trigger: 'body',
-        start: 'top top',
-        end: 'bottom bottom',
-        onUpdate: self => {
-          progressFill.style.width = (self.progress * 100) + '%';
-        }
-      });
-    }
-
-    const intro = document.querySelector('.intro');
-    if (intro) {
-      gsap.to(intro, {
-        opacity: 0.2,
-        scale: 0.9,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: intro,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 2
-        }
-      });
-    }
-  }
-
-  // Custom cursor
-  const cursor = document.getElementById('cursor');
-  if (cursor) {
-    let mouseX = 0, mouseY = 0;
-    let cursorX = 0, cursorY = 0;
-
-    document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    });
-
-    function animateCursor() {
-      cursorX += (mouseX - cursorX) * 0.1;
-      cursorY += (mouseY - cursorY) * 0.1;
-      cursor.style.left = cursorX + 'px';
-      cursor.style.top = cursorY + 'px';
-      requestAnimationFrame(animateCursor);
-    }
-    animateCursor();
-
-    document.addEventListener('mouseenter', (e) => {
-      if (e.target.matches('li, .invention-card, h1, h2, .progress-dot, .invention-photo')) {
-        cursor.classList.add('hover');
-      }
-    }, true);
-
-    document.addEventListener('mouseleave', (e) => {
-      if (e.target.matches('li, .invention-card, h1, h2, .progress-dot, .invention-photo')) {
-        cursor.classList.remove('hover');
-      }
-    }, true);
-  }
-
+  // Navigation
   document.querySelectorAll('.timeline-sidebar li, .progress-dot').forEach(item => {
     item.addEventListener('click', () => {
       const targetId = item.getAttribute('data-target') || item.getAttribute('data-era');
@@ -492,6 +533,7 @@ function initializeEnhancedTimeline() {
     });
   });
 
+  // Particles
   function createParticles() {
     const particlesContainer = document.getElementById('particles');
     
@@ -509,6 +551,7 @@ function initializeEnhancedTimeline() {
 
   setTimeout(createParticles, 3000);
 
+  // Content hover effects
   document.querySelectorAll('.main-content').forEach(content => {
     content.addEventListener('mouseenter', () => {
       gsap.to(content, { 
