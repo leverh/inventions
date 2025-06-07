@@ -185,10 +185,36 @@ function generateInventionCards() {
         const invention = inventionData[inventionKey];
         
         if (invention) {
-          const shortDetails = invention.details
+          // Text truncation logic
+          let shortDetails = invention.details
             .replace(/<h3>.*?<\/h3>/g, '')
             .replace(/<[^>]*>/g, '')
-            .split('.')[0] + '.';
+            .trim();
+
+          const sentences = shortDetails.split(/[.!?]+/).filter(s => s.trim().length > 0);
+          
+          if (sentences.length > 0) {
+            let truncatedText = sentences[0].trim();
+
+            if (truncatedText.length < 50 && sentences.length > 1) {
+              truncatedText += '. ' + sentences[1].trim();
+            }
+
+            if (truncatedText.length > 120) {
+              truncatedText = truncatedText.substring(0, 120).trim();
+              const lastSpace = truncatedText.lastIndexOf(' ');
+              if (lastSpace > 80) {
+                truncatedText = truncatedText.substring(0, lastSpace);
+              }
+              truncatedText += '...';
+            } else {
+              truncatedText += '.';
+            }
+            
+            shortDetails = truncatedText;
+          } else {
+            shortDetails = invention.description.substring(0, 100) + '...';
+          }
           
           const cardHTML = `
             <div class="invention-card" data-invention="${inventionKey}">
@@ -209,7 +235,7 @@ function generateInventionCards() {
                     <div class="invention-detail-title">${invention.title}</div>
                     <div class="invention-detail-year">${invention.year}</div>
                     <div class="invention-detail-text">
-                      ${shortDetails.length > 150 ? shortDetails.substring(0, 150) + '...' : shortDetails}
+                      ${shortDetails}
                       <br><br>
                       <strong style="color: #40e0d0;">Click for full details</strong>
                     </div>
@@ -488,11 +514,312 @@ function initEnhancedAnimations() {
   }
 }
 
-// Main
+// Timeline Scrubber Class
+class TimelineScrubber {
+  constructor() {
+    this.scrubber = document.getElementById('timelineScrubber');
+    this.track = document.getElementById('scrubberTrack');
+    this.progress = document.getElementById('scrubberProgress');
+    this.handle = document.getElementById('scrubberHandle');
+    this.labels = document.querySelectorAll('.scrubber-label');
+    this.currentEraDisplay = document.getElementById('currentEra');
+    this.progressText = document.getElementById('progressText');
+    this.closeBtn = document.getElementById('scrubberClose');
+    
+    this.isDragging = false;
+    this.currentProgress = 0;
+    this.isVisible = false;
+    this.userManuallyHidden = false; // Track if user manually closed it
+    
+    this.eras = [
+      { id: 'stone-age', name: 'Stone Age', start: 0, end: 0.25 },
+      { id: 'renaissance', name: 'Renaissance', start: 0.25, end: 0.5 },
+      { id: 'modern-age', name: 'Modern Age', start: 0.5, end: 0.75 },
+      { id: 'future', name: 'Future', start: 0.75, end: 1 }
+    ];
+    
+    this.initEvents();
+    setTimeout(() => {
+      if (!this.userManuallyHidden) {
+        this.show();
+      }
+    }, 5000);
+  }
+  
+  initEvents() {
+    if (!this.scrubber || !this.track || !this.handle) {
+      console.error('Timeline scrubber elements not found');
+      return;
+    }
+
+    // Handle dragging
+    if (this.handle) {
+      this.handle.addEventListener('mousedown', this.onDragStart.bind(this));
+      this.handle.addEventListener('touchstart', this.onDragStart.bind(this), { passive: false });
+    }
+    
+    // Track clicking
+    if (this.track) {
+      this.track.addEventListener('click', this.onTrackClick.bind(this));
+    }
+    
+    // Label clicking
+    if (this.labels && this.labels.length > 0) {
+      this.labels.forEach(label => {
+        label.addEventListener('click', () => {
+          const eraId = label.getAttribute('data-era');
+          this.navigateToEra(eraId);
+        });
+      });
+    }
+    
+    // Close button
+    if (this.closeBtn) {
+      console.log('Close button found, adding event listener');
+      this.closeBtn.addEventListener('click', (e) => {
+        console.log('Close button clicked');
+        e.preventDefault();
+        e.stopPropagation();
+        this.userManuallyHidden = true;
+        this.hide();
+      });
+    } else {
+      console.error('Close button not found - ID: scrubberClose');
+      const fallbackCloseBtn = document.querySelector('.scrubber-close') || 
+                              document.querySelector('#scrubberClose') ||
+                              document.querySelector('[class*="close"]');
+      if (fallbackCloseBtn) {
+        console.log('Found fallback close button');
+        fallbackCloseBtn.addEventListener('click', (e) => {
+          console.log('Fallback close button clicked');
+          e.preventDefault();
+          e.stopPropagation();
+          this.userManuallyHidden = true;
+          this.hide();
+        });
+      }
+    }
+    
+    // Global mouse events
+    document.addEventListener('mousemove', this.onDrag.bind(this));
+    document.addEventListener('mouseup', this.onDragEnd.bind(this));
+    document.addEventListener('touchmove', this.onDrag.bind(this), { passive: false });
+    document.addEventListener('touchend', this.onDragEnd.bind(this));
+    
+    // Scroll to update progress
+    window.addEventListener('scroll', this.updateFromScroll.bind(this));
+    
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      // Shift+Tab to toggle scrubber
+      if (e.key === 'Tab' && e.shiftKey) {
+        e.preventDefault();
+        this.toggle();
+      }
+      // 'T' key to toggle scrubber
+      if (e.key === 't' || e.key === 'T') {
+        this.toggle();
+      }
+      // Escape key to close scrubber
+      if (e.key === 'Escape' && this.isVisible) {
+        this.hide();
+      }
+    });
+  }
+  
+  onDragStart(e) {
+    this.isDragging = true;
+    this.handle.classList.add('dragging');
+    e.preventDefault();
+    
+    // Pulse effect
+    this.handle.classList.add('pulsing');
+  }
+  
+  onDrag(e) {
+    if (!this.isDragging) return;
+    
+    const rect = this.track.getBoundingClientRect();
+    const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+    const progress = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    
+    this.setProgress(progress);
+    this.navigateToProgress(progress);
+  }
+  
+  onDragEnd() {
+    if (!this.isDragging) return;
+    
+    this.isDragging = false;
+    this.handle.classList.remove('dragging', 'pulsing');
+  }
+  
+  onTrackClick(e) {
+    if (this.isDragging) return;
+    
+    const rect = this.track.getBoundingClientRect();
+    const progress = (e.clientX - rect.left) / rect.width;
+    this.setProgress(Math.max(0, Math.min(1, progress)));
+    this.navigateToProgress(progress);
+  }
+  
+  setProgress(progress) {
+    this.currentProgress = progress;
+    this.progress.style.width = (progress * 100) + '%';
+    this.handle.style.left = (progress * 100) + '%';
+    
+    // Update active label
+    const currentEra = this.getCurrentEra(progress);
+    this.updateActiveLabel(currentEra);
+    this.updateProgressDisplay(progress, currentEra);
+  }
+  
+  getCurrentEra(progress) {
+    return this.eras.find(era => progress >= era.start && progress < era.end) || this.eras[this.eras.length - 1];
+  }
+  
+  updateActiveLabel(currentEra) {
+    this.labels.forEach(label => {
+      const isActive = label.getAttribute('data-era') === currentEra.id;
+      label.classList.toggle('active', isActive);
+    });
+  }
+  
+  updateProgressDisplay(progress, currentEra) {
+    this.currentEraDisplay.textContent = currentEra.name;
+    this.progressText.textContent = Math.round(progress * 100) + '% Complete';
+  }
+  
+  navigateToProgress(progress) {
+    const currentEra = this.getCurrentEra(progress);
+    const eraElement = document.getElementById(currentEra.id);
+    
+    if (eraElement) {
+      // Smooth scroll
+      eraElement.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
+  }
+  
+  navigateToEra(eraId) {
+    const era = this.eras.find(e => e.id === eraId);
+    if (era) {
+      const progress = era.start + (era.end - era.start) * 0.5; // Middle of era
+      this.setProgress(progress);
+      this.navigateToProgress(progress);
+
+      this.handle.classList.add('pulsing');
+      setTimeout(() => {
+        this.handle.classList.remove('pulsing');
+      }, 1500);
+    }
+  }
+  
+  updateFromScroll() {
+    if (this.isDragging) return;
+
+    const scrollTop = window.pageYOffset;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollProgress = Math.max(0, Math.min(1, scrollTop / docHeight));
+    
+    this.setProgress(scrollProgress);
+  }
+  
+  show() {
+    if (this.isVisible) return;
+    
+    console.log('Showing timeline scrubber');
+    this.isVisible = true;
+    this.scrubber.classList.add('visible', 'animate-in');
+
+    setTimeout(() => {
+      this.updateFromScroll();
+    }, 500);
+  }
+  
+  hide() {
+    if (!this.isVisible) return;
+    
+    console.log('Hiding timeline scrubber');
+    this.isVisible = false;
+    this.scrubber.classList.remove('visible', 'animate-in');
+
+    setTimeout(() => {
+      this.showReopenHint();
+    }, 500);
+  }
+  
+  toggle() {
+    if (this.isVisible) {
+      this.userManuallyHidden = true;
+      this.hide();
+    } else {
+      this.userManuallyHidden = false;
+      this.show();
+    }
+  }
+
+  showReopenHint() {
+    const hint = document.createElement('div');
+    hint.style.cssText = `
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(64, 224, 208, 0.9);
+      color: #000;
+      padding: 0.8rem 1.5rem;
+      border-radius: 25px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      z-index: 1001;
+      box-shadow: 0 4px 15px rgba(64, 224, 208, 0.4);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    `;
+    hint.textContent = 'Press "T" to reopen timeline scrubber';
+    
+    document.body.appendChild(hint);
+    
+    // Animate in
+    setTimeout(() => hint.style.opacity = '1', 100);
+
+    setTimeout(() => {
+      hint.style.opacity = '0';
+      setTimeout(() => {
+        if (hint.parentNode) {
+          hint.parentNode.removeChild(hint);
+        }
+      }, 300);
+    }, 3000);
+  }
+}
+
+// Initialize timeline scrubber
+function initTimelineScrubber() {
+  setTimeout(() => {
+    const scrubberElement = document.getElementById('timelineScrubber');
+    if (!scrubberElement) {
+      console.error('Timeline scrubber HTML not found');
+      return;
+    }
+    
+    const timelineScrubber = new TimelineScrubber();
+
+    window.timelineScrubber = timelineScrubber;
+    
+    console.log('Timeline scrubber initialized');
+  }, 2000);
+}
+
+// Main initialization function
 function initializeEnhancedTimeline() {
   console.log('Initializing enhanced timeline...');
 
   generateInventionCards();
+  initTimelineScrubber();
   lazyLoadBackgrounds();
 
   const modal = initModal();

@@ -668,6 +668,229 @@ body {
   background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1600&h=900&fit=crop');
 }
 
+/* Timeline scrubber */
+.timeline-scrubber {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 800px;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  padding: 1.5rem 2rem;
+  border: 1px solid rgba(64, 224, 208, 0.3);
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.5),
+    0 0 50px rgba(64, 224, 208, 0.1);
+  opacity: 0;
+  transform: translateX(-50%) translateY(100px);
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.timeline-scrubber.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.scrubber-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.scrubber-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #40e0d0;
+  text-shadow: 0 0 10px rgba(64, 224, 208, 0.3);
+}
+
+.scrubber-close {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  line-height: 1;
+}
+
+.scrubber-close:hover {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+  transform: rotate(90deg);
+}
+
+.scrubber-track {
+  position: relative;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 1.5rem 0;
+  overflow: hidden;
+}
+
+.scrubber-track::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    rgba(139, 69, 19, 0.3) 0%,     /* Stone Age - Brown */
+    rgba(139, 69, 19, 0.3) 25%,
+    rgba(184, 134, 11, 0.3) 25%,   /* Renaissance - Gold */
+    rgba(184, 134, 11, 0.3) 50%,
+    rgba(64, 224, 208, 0.3) 50%,   /* Modern - Teal */
+    rgba(64, 224, 208, 0.3) 75%,
+    rgba(147, 51, 234, 0.3) 75%,   /* Future - Purple */
+    rgba(147, 51, 234, 0.3) 100%
+  );
+}
+
+.scrubber-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #40e0d0, #ff6b6b, #4ecdc4);
+  border-radius: 4px;
+  width: 0%;
+  transition: width 0.1s ease;
+  box-shadow: 0 0 15px rgba(64, 224, 208, 0.5);
+}
+
+.scrubber-handle {
+  position: absolute;
+  top: -8px;
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, #40e0d0, #4ecdc4);
+  border-radius: 50%;
+  left: 0%;
+  transform: translateX(-50%);
+  cursor: grab;
+  box-shadow: 
+    0 4px 15px rgba(64, 224, 208, 0.6),
+    0 0 0 3px rgba(0, 0, 0, 0.8),
+    0 0 0 5px rgba(64, 224, 208, 0.2);
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.scrubber-handle:hover {
+  transform: translateX(-50%) scale(1.2);
+  box-shadow: 
+    0 6px 20px rgba(64, 224, 208, 0.8),
+    0 0 0 3px rgba(0, 0, 0, 0.8),
+    0 0 0 6px rgba(64, 224, 208, 0.4);
+}
+
+.scrubber-handle:active,
+.scrubber-handle.dragging {
+  cursor: grabbing;
+  transform: translateX(-50%) scale(1.1);
+  box-shadow: 
+    0 8px 25px rgba(64, 224, 208, 1),
+    0 0 0 3px rgba(0, 0, 0, 0.8),
+    0 0 0 7px rgba(64, 224, 208, 0.6);
+}
+
+.scrubber-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-top: 1rem;
+  position: relative;
+}
+
+.scrubber-label {
+  flex: 1;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  position: relative;
+}
+
+.scrubber-label:hover {
+  color: #40e0d0;
+  background: rgba(64, 224, 208, 0.1);
+}
+
+.scrubber-label.active {
+  color: #40e0d0;
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(64, 224, 208, 0.5);
+  background: rgba(64, 224, 208, 0.15);
+  transform: translateY(-2px);
+}
+
+.scrubber-label.active::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  background: #40e0d0;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(64, 224, 208, 0.8);
+}
+
+/* Era indicators on track */
+.era-markers {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.era-marker {
+  position: absolute;
+  top: -2px;
+  width: 2px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateX(-50%);
+}
+
+.era-marker:nth-child(1) { left: 25%; }
+.era-marker:nth-child(2) { left: 50%; }
+.era-marker:nth-child(3) { left: 75%; }
+
+/* Scrubber info display */
+.scrubber-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.current-era {
+  color: #40e0d0;
+  font-weight: 600;
+}
+
+.scrubber-progress-text {
+  opacity: 0.7;
+}
+
 /* Footer */
 .footer {
   background: #0a0a0a;
@@ -737,6 +960,25 @@ body {
   .invention-detail-title {
     font-size: 1.4rem;
   }
+
+  .timeline-scrubber {
+    width: 95%;
+    padding: 1rem 1.5rem;
+    bottom: 1rem;
+  }
+  
+  .scrubber-title {
+    font-size: 1rem;
+  }
+  
+  .scrubber-labels {
+    font-size: 0.8rem;
+  }
+  
+  .scrubber-handle {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 /* Lazy Loading Images */
@@ -747,4 +989,40 @@ body {
 
 .lazy-bg.loaded {
   opacity: 1;
+}
+
+/* Animation for scrubber appearance */
+@keyframes scrubberSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.timeline-scrubber.animate-in {
+  animation: scrubberSlideIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Pulse animation for handle when auto-scrubbing */
+@keyframes handlePulse {
+  0%, 100% {
+    box-shadow: 
+      0 4px 15px rgba(64, 224, 208, 0.6),
+      0 0 0 3px rgba(0, 0, 0, 0.8),
+      0 0 0 5px rgba(64, 224, 208, 0.2);
+  }
+  50% {
+    box-shadow: 
+      0 6px 20px rgba(64, 224, 208, 1),
+      0 0 0 3px rgba(0, 0, 0, 0.8),
+      0 0 0 8px rgba(64, 224, 208, 0.6);
+  }
+}
+
+.scrubber-handle.pulsing {
+  animation: handlePulse 1.5s ease-in-out infinite;
 }

@@ -105,7 +105,34 @@
     <p>&copy; 2025 Interactive Timeline. Built with modern web technologies.</p>
     <p class="footer-note">Explore the innovations that shaped our world.</p>
   </footer>
-
+<div class="timeline-scrubber" id="timelineScrubber">
+  <div class="scrubber-header">
+    <div class="scrubber-title">Navigate Through Time</div>
+    <button class="scrubber-close" id="scrubberClose" title="Hide Timeline Scrubber">×</button>
+  </div>
+  
+  <div class="scrubber-track" id="scrubberTrack">
+    <div class="era-markers">
+      <div class="era-marker"></div>
+      <div class="era-marker"></div>
+      <div class="era-marker"></div>
+    </div>
+    <div class="scrubber-progress" id="scrubberProgress"></div>
+    <div class="scrubber-handle" id="scrubberHandle"></div>
+  </div>
+  
+  <div class="scrubber-labels">
+    <div class="scrubber-label" data-era="stone-age">Stone Age</div>
+    <div class="scrubber-label" data-era="renaissance">Renaissance</div>
+    <div class="scrubber-label" data-era="modern-age">Modern Age</div>
+    <div class="scrubber-label" data-era="future">Future</div>
+  </div>
+  
+  <div class="scrubber-info">
+    <div class="current-era" id="currentEra">Stone Age</div>
+    <div class="scrubber-progress-text" id="progressText">0% Complete</div>
+  </div>
+</div>
   <script type="module" src="/src/js/main.js"></script>
 </body>
 </html>
