@@ -376,7 +376,7 @@ body {
 
 /* Front of the card */
 .invention-card-front {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -480,9 +480,11 @@ body {
 }
 
 .flip-indicator {
-  position: absolute;
+  /* position: absolute;
   bottom: 1rem;
-  right: 1rem;
+  right: 1rem; */
+  position: relative;
+  display: inline-block;
   background: rgba(64, 224, 208, 0.2);
   color: #40e0d0;
   padding: 0.3rem 0.8rem;
@@ -491,6 +493,7 @@ body {
   font-weight: 500;
   backdrop-filter: blur(5px);
   border: 1px solid rgba(64, 224, 208, 0.3);
+  margin-top: .5rem;
 }
 
 /* Animation keyframes */
@@ -931,9 +934,9 @@ body {
     padding: 2rem;
   }
   
-  .inventions-grid {
+  /* .inventions-grid {
     grid-template-columns: 1fr;
-  }
+  } */
   
   .intro-content h1 {
     font-size: 2.5rem;
@@ -978,6 +981,77 @@ body {
   .scrubber-handle {
     width: 20px;
     height: 20px;
+  }
+
+  .invention-detail-text {
+    font-size: 0.8rem !important;
+    line-height: 1.4 !important;
+    padding: 0 0.5rem;
+    max-height: 120px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+  }
+  
+  .invention-detail-title {
+    font-size: 1.2rem !important;
+    margin-bottom: 0.3rem !important;
+  }
+  
+  .invention-detail-year {
+    font-size: 1rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .invention-detail-icon {
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .invention-detail-icon img {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  
+  .invention-card-back {
+    padding: 1rem !important;
+  }
+  
+  .invention-detail-content {
+    justify-content: flex-start !important;
+    gap: 0.3rem;
+  }
+  
+  .flip-indicator {
+    font-size: 0.7rem !important;
+    padding: 0.2rem 0.5rem !important;
+    margin-top: 0.3rem !important;
+  }
+
+  .timeline-sidebar {
+    visibility: hidden;
+  }
+}
+
+@media (max-width: 480px) {
+  .invention-card {
+    height: 260px !important;
+  }
+  
+  .invention-detail-text {
+    font-size: 0.75rem !important;
+    line-height: 1.3 !important;
+    -webkit-line-clamp: 5 !important;
+    max-height: 100px !important;
+  }
+  
+  .invention-detail-title {
+    font-size: 1.1rem !important;
+  }
+  
+  .invention-card-back {
+    padding: 0.8rem !important;
   }
 }
 
