@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Space+Grotesk:wght@300..700&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -5,11 +7,42 @@
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   line-height: 1.6;
   background: #0a0a0a;
   color: #f0f0f0;
   overflow-x: hidden;
+  font-feature-settings: 'kern' 1, 'liga' 1;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+/* Font specifics */
+
+.intro-content h1 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.era h2 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.invention-title {
+  font-weight: 600;
+}
+
+.timeline-sidebar li {
+  font-weight: 500;
+}
+
+.scrubber-progress-text,
+.invention-year {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Loading Screen */
