@@ -4,135 +4,142 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="/src/styles/base.css">
-  <title>Timeline of Inventions</title>
+  <title>Timeline of Inventions - Interactive History</title>
+  <meta name="description" content="Explore human innovation through an interactive timeline featuring major inventions from the Stone Age to the Future, including fire, printing press, electricity, and AI.">
 </head>
 <body>
-  <div class="loading-screen" id="loading">
-    <div class="loader"></div>
+  <!-- Skip to main content link for keyboard users -->
+  <a href="#timeline" class="skip-link">Skip to main content</a>
+  
+  <div class="loading-screen" id="loading" aria-hidden="true">
+    <div class="loader" role="status" aria-label="Loading timeline content"></div>
     <div class="loading-text">Loading Timeline...</div>
   </div>
 
-  <div class="progress-bar">
+  <div class="progress-bar" role="progressbar" aria-label="Page scroll progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
     <div class="progress-fill" id="progressFill"></div>
   </div>
 
-  <div class="particles" id="particles"></div>
+  <div class="particles" id="particles" aria-hidden="true"></div>
 
-  <section class="intro">
+  <section class="intro" role="banner">
     <div class="intro-content">
       <h1 id="mainTitle">The Timeline of Inventions</h1>
       <p id="subtitle">Discover the innovations that shaped our world</p>
     </div>
-    <div class="scroll-indicator">
+    <div class="scroll-indicator" aria-hidden="true">
       <div class="scroll-arrow"></div>
     </div>
   </section>
 
-  <main id="timeline">
-    <nav class="timeline-sidebar">
+  <main id="timeline" role="main">
+    <nav class="timeline-sidebar" role="navigation" aria-label="Timeline eras navigation">
       <ul>
-        <li data-target="stone-age">Stone Age</li>
-        <li data-target="renaissance">Renaissance</li>
-        <li data-target="modern-age">Modern Age</li>
-        <li data-target="future">Future</li>
+        <li data-target="stone-age" tabindex="0" aria-label="Navigate to Stone Age era">Stone Age</li>
+        <li data-target="renaissance" tabindex="0" aria-label="Navigate to Renaissance era">Renaissance</li>
+        <li data-target="modern-age" tabindex="0" aria-label="Navigate to Modern Age era">Modern Age</li>
+        <li data-target="future" tabindex="0" aria-label="Navigate to Future era">Future</li>
       </ul>
     </nav>
 
-    <section class="era" id="stone-age">
-      <div class="background-layer background-stone-age lazy-bg" data-bg="stone-age"></div>
+    <section class="era" id="stone-age" aria-labelledby="stone-age-heading">
+      <div class="background-layer background-stone-age lazy-bg" data-bg="stone-age" aria-hidden="true"></div>
       <div class="era-content-wrapper">
         <div class="main-content">
-          <h2>Stone Age</h2>
+          <h2 id="stone-age-heading">Stone Age</h2>
           <p>The dawn of human innovation. Our ancestors discovered fire, crafted the first tools, and began expressing themselves through art, laying the foundation for all future technological advancement.</p>
         </div>
-        <div class="inventions-grid"></div>
+        <div class="inventions-grid" role="group" aria-label="Stone Age inventions"></div>
       </div>
     </section>
 
-    <section class="era" id="renaissance">
-      <div class="background-layer background-renaissance lazy-bg" data-bg="renaissance"></div>
+    <section class="era" id="renaissance" aria-labelledby="renaissance-heading">
+      <div class="background-layer background-renaissance lazy-bg" data-bg="renaissance" aria-hidden="true"></div>
       <div class="era-content-wrapper">
         <div class="main-content">
-          <h2>Renaissance</h2>
+          <h2 id="renaissance-heading">Renaissance</h2>
           <p>A period of unprecedented intellectual and artistic flourishing. Revolutionary inventions transformed how knowledge was shared, the cosmos was understood, and the human body was studied.</p>
         </div>
-        <div class="inventions-grid"></div>
+        <div class="inventions-grid" role="group" aria-label="Renaissance inventions"></div>
       </div>
     </section>
 
-    <section class="era" id="modern-age">
-      <div class="background-layer background-modern-age lazy-bg" data-bg="modern"></div>
+    <section class="era" id="modern-age" aria-labelledby="modern-age-heading">
+      <div class="background-layer background-modern-age lazy-bg" data-bg="modern" aria-hidden="true"></div>
       <div class="era-content-wrapper">
         <div class="main-content">
-          <h2>Modern Age</h2>
+          <h2 id="modern-age-heading">Modern Age</h2>
           <p>The era of electricity, communication, and space exploration. These inventions connected the world, powered industry, and took humanity beyond Earth's boundaries.</p>
         </div>
-        <div class="inventions-grid"></div>
+        <div class="inventions-grid" role="group" aria-label="Modern Age inventions"></div>
       </div>
     </section>
 
-    <section class="era" id="future">
-      <div class="background-layer background-future lazy-bg" data-bg="future"></div>
+    <section class="era" id="future" aria-labelledby="future-heading">
+      <div class="background-layer background-future lazy-bg" data-bg="future" aria-hidden="true"></div>
       <div class="era-content-wrapper">
         <div class="main-content">
-          <h2>Future</h2>
+          <h2 id="future-heading">Future</h2>
           <p>Emerging technologies that will define tomorrow. AI augments human intelligence, quantum computing solves impossible problems, and space colonization expands our reach.</p>
         </div>
-        <div class="inventions-grid"></div>
+        <div class="inventions-grid" role="group" aria-label="Future inventions"></div>
       </div>
     </section>
 
-    <div class="era-progress">
-      <div class="progress-dot" data-era="stone-age"></div>
-      <div class="progress-dot" data-era="renaissance"></div>
-      <div class="progress-dot" data-era="modern-age"></div>
-      <div class="progress-dot" data-era="future"></div>
+    <div class="era-progress" role="navigation" aria-label="Timeline progress indicators">
+      <div class="progress-dot" data-era="stone-age" tabindex="0" aria-label="Jump to Stone Age section"></div>
+      <div class="progress-dot" data-era="renaissance" tabindex="0" aria-label="Jump to Renaissance section"></div>
+      <div class="progress-dot" data-era="modern-age" tabindex="0" aria-label="Jump to Modern Age section"></div>
+      <div class="progress-dot" data-era="future" tabindex="0" aria-label="Jump to Future section"></div>
     </div>
   </main>
 
-  <div class="invention-modal" id="inventionModal">
+  <div class="invention-modal" id="inventionModal" role="dialog" aria-labelledby="modalTitle" aria-describedby="modalBody" aria-hidden="true">
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title" id="modalTitle">Invention Title</h2>
-        <button class="close-modal" id="closeModal">×</button>
+        <button class="close-modal" id="closeModal" aria-label="Close invention details dialog">×</button>
       </div>
-      <div class="modal-body" id="modalBody">
+      <div class="modal-body" id="modalBody" role="document">
       </div>
     </div>
   </div>
 
-  <footer class="footer">
-    <p>&copy; 2025 Interactive Timeline. Built with modern web technologies.</p>
+  <footer class="footer" role="contentinfo">
+    <p>&copy; 2025 Interactive Timeline. Developed by <a href="https://pixelsummit.dev/" aria-label="Visit PixelSummit website (opens in new tab)" target="_blank" rel="noopener">PixelSummit</a> for fun and educational purposes</p>
     <p class="footer-note">Explore the innovations that shaped our world.</p>
   </footer>
-<div class="timeline-scrubber" id="timelineScrubber">
-  <div class="scrubber-header">
-    <div class="scrubber-title">Navigate Through Time</div>
-    <button class="scrubber-close" id="scrubberClose" title="Hide Timeline Scrubber">×</button>
-  </div>
-  
-  <div class="scrubber-track" id="scrubberTrack">
-    <div class="era-markers">
-      <div class="era-marker"></div>
-      <div class="era-marker"></div>
-      <div class="era-marker"></div>
+
+  <!-- Interactive Timeline Scrubber -->
+  <div class="timeline-scrubber" id="timelineScrubber" role="navigation" aria-label="Timeline scrubber controls">
+    <div class="scrubber-header">
+      <div class="scrubber-title">Navigate Through Time</div>
+      <button class="scrubber-close" id="scrubberClose" aria-label="Hide timeline scrubber" title="Hide Timeline Scrubber">×</button>
     </div>
-    <div class="scrubber-progress" id="scrubberProgress"></div>
-    <div class="scrubber-handle" id="scrubberHandle"></div>
+    
+    <div class="scrubber-track" id="scrubberTrack" role="slider" aria-label="Timeline position slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+      <div class="era-markers" aria-hidden="true">
+        <div class="era-marker"></div>
+        <div class="era-marker"></div>
+        <div class="era-marker"></div>
+      </div>
+      <div class="scrubber-progress" id="scrubberProgress" aria-hidden="true"></div>
+      <div class="scrubber-handle" id="scrubberHandle" aria-label="Drag to navigate timeline" tabindex="-1"></div>
+    </div>
+    
+    <div class="scrubber-labels" role="group" aria-label="Era navigation buttons">
+      <div class="scrubber-label" data-era="stone-age" tabindex="0" aria-label="Navigate to Stone Age era">Stone Age</div>
+      <div class="scrubber-label" data-era="renaissance" tabindex="0" aria-label="Navigate to Renaissance era">Renaissance</div>
+      <div class="scrubber-label" data-era="modern-age" tabindex="0" aria-label="Navigate to Modern Age era">Modern Age</div>
+      <div class="scrubber-label" data-era="future" tabindex="0" aria-label="Navigate to Future era">Future</div>
+    </div>
+    
+    <div class="scrubber-info" role="status" aria-live="polite">
+      <div class="current-era" id="currentEra" aria-label="Current era">Stone Age</div>
+      <div class="scrubber-progress-text" id="progressText" aria-label="Timeline progress">0% Complete</div>
+    </div>
   </div>
-  
-  <div class="scrubber-labels">
-    <div class="scrubber-label" data-era="stone-age">Stone Age</div>
-    <div class="scrubber-label" data-era="renaissance">Renaissance</div>
-    <div class="scrubber-label" data-era="modern-age">Modern Age</div>
-    <div class="scrubber-label" data-era="future">Future</div>
-  </div>
-  
-  <div class="scrubber-info">
-    <div class="current-era" id="currentEra">Stone Age</div>
-    <div class="scrubber-progress-text" id="progressText">0% Complete</div>
-  </div>
-</div>
+
   <script type="module" src="/src/js/main.js"></script>
 </body>
 </html>
